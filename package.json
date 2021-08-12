@@ -1,0 +1,63 @@
+{
+  "name": "cuidar_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd src && nodemon server.js",
+    "migrate": "sequelize db:migrate",
+    "migrate:generate": "sequelize migration:generate",
+    "migrate:undo": "sequelize db:migrate:undo",
+    "seed": "sequelize db:seed:all",
+    "seed:undo": "sequelize db:seed:undo",
+    "seed:generate": "sequelize seed:generate",
+    "prettier": "prettier --write \"**/*.js\"",
+    "lint": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thaynnara007/Cuidar_backend.git"
+  },
+  "author": "Thaynnara Gonçalves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thaynnara007/Cuidar_backend/issues"
+  },
+  "homepage": "https://github.com/thaynnara007/Cuidar_backend#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run prettier",
+      "npm run lint",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "http-status-code": "^2.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.6.3",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "sequelize-cli": "^5.5.1"
+  }
+}
