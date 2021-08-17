@@ -1,9 +1,9 @@
 version: "3.7"
 
 services:
-  cuidar_api:
-    image: cuidar_api
-    container_name: 'cuidar_api'
+  letsplay_api:
+    image: letsplay_api
+    container_name: 'letsplay_api'
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -15,7 +15,7 @@ services:
     networks: 
       - backend
     depends_on: 
-      - cuidar_db
+      - letsplay_db
     ports:
       - "3030:3030"
     env_file: 
@@ -25,8 +25,8 @@ services:
       BASE_URL: localhost
       DB_DIALECT: postgres
       DB_PORT: 5432
-      DB_HOST: cuidar_db
-      DB_NAME: Cuidar
+      DB_HOST: letsplay_db
+      DB_NAME: LetsPlay
       DB_USERNAME: postgres
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
@@ -37,9 +37,9 @@ services:
       EMAIL_SMTP_HOST: smtp.example.com
     command: npm run start
 
-  cuidar_db:
+  letsplay_db:
     image: postgres
-    container_name: 'cuidar_db'
+    container_name: 'letsplay_db'
     restart: unless-stopped
     volumes:
       - ./config/database/init.sql:/data/application/init.sql
@@ -49,7 +49,7 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USERNAME: postgres
-      POSTGRES_DB: Cuidar
+      POSTGRES_DB: LetsPlay
     ports:
       - "5432:5432"
     networks: 
@@ -57,10 +57,10 @@ services:
 
   pg-admin:
     image: dpage/pgadmin4
-    container_name: 'pgadmin4_cuidar'
+    container_name: 'pgadmin4_letsplay'
     restart: unless-stopped
     depends_on: 
-      - cuidar_db
+      - letsplay_db
     volumes: 
       - pgadmin-data:/var/lib/pgadmin
     networks: 
@@ -82,4 +82,3 @@ volumes:
 networks:
   backend:
     driver: 'bridge'
-  

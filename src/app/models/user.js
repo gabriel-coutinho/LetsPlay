@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  User.associate = () => {
-    // associations can be defined here
+  User.associate = (models) => {
+    User.hasOne(models.Address);
   };
 
   User.addHook('beforeSave', async (user) => {

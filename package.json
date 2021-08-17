@@ -1,5 +1,5 @@
 {
-  "name": "cuidar_backend",
+  "name": "letsplay_backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thaynnara007/Cuidar_backend.git"
+    "url": "git+https://github.com/gabriel-coutinho/LetsPlay.git"
   },
-  "author": "Thaynnara Gonçalves",
+  "author": "Gabriel Coutinho",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thaynnara007/Cuidar_backend/issues"
+    "url": "https://github.com/gabriel-coutinho/LetsPlay/issues"
   },
-  "homepage": "https://github.com/thaynnara007/Cuidar_backend#readme",
+  "homepage": "https://github.com/gabriel-coutinho/LetsPlay#readme",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
