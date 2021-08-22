@@ -31,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.associate = (models) => {
-    User.hasOne(models.Address);
+    User.hasOne(models.Address, {
+      foreignKey: 'userId',
+      as: 'address',
+    });
   };
 
   User.addHook('beforeSave', async (user) => {

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     Address.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
-      as: 'address',
+      as: 'user',
     });
   };
   return Address;

@@ -10,19 +10,19 @@ const create = async (req, res) => {
     const { user, address } = req.body;
 
     if (!user.email) {
-      res
+      return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: 'Email é obrigatório na criação do usuário' });
     }
 
     if (!user.phoneNumber) {
-      res
+      return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: 'Telefone é obrigatório na criação do usuário' });
     }
 
     if (!user.password) {
-      res
+      return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: 'Senha é obrigatória na criação do usuário' });
     }
@@ -33,7 +33,7 @@ const create = async (req, res) => {
     const userWithSameEmail = await service.getByEmail(user.email);
 
     if (userWithSameEmail) {
-      res
+      return res
         .status(StatusCodes.CONFLICT)
         .json({ error: 'Já existe um usuário com este email' });
     }
