@@ -18,6 +18,8 @@ const getById = (id) => User.findByPk(id, {
   ],
 });
 
+const getOnlyUserById = (id) => User.findByPk(id);
+
 const getAll = async (query) => {
   const page = parseInt(query.page, 10);
   const pageSize = parseInt(query.pageSize, 10);
@@ -49,9 +51,13 @@ const getAll = async (query) => {
   return users;
 };
 
+const remove = (user) => user.destroy();
+
 module.exports = {
   create,
   getByEmail,
   getById,
+  getOnlyUserById,
   getAll,
+  remove,
 };

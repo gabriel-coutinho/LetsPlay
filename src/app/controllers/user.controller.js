@@ -81,7 +81,37 @@ const getAll = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    log.info(`Iniciando remoção de usuário. userId = ${id}`);
+
+    const user = await service.getOnlyUserById(id);
+
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
+    await service.remove(user);
+
+    log.info('Finalizando remoção de usuário.');
+    return res.status(StatusCodes.OK).json('Usuário removido com sucesso.');
+  } catch (error) {
+    const errorMsg = 'Erro ao remover usuário';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 module.exports = {
   create,
   getAll,
+  remove,
 };
