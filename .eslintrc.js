@@ -10,8 +10,10 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
+  plugins: ['@babel'],
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
   },
-  rules: {},
+  rules: { '@babel/no-unused-expressions': 0, 'no-console': 2 },
 };

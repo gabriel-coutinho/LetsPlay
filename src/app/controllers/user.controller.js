@@ -48,7 +48,6 @@ const create = async (req, res) => {
     const userInfo = await service.getById(newUser.id);
 
     log.info('Finalizado a criação de usuário.');
-
     return res.status(StatusCodes.CREATED).json(userInfo);
   } catch (error) {
     const errorMsg = 'Erro ao criar usuário';
@@ -66,11 +65,9 @@ const getAll = async (req, res) => {
     const { query } = req;
 
     log.info(`Iniciando listagem dos usuarios, page: ${query.page}`);
-
     const users = await service.getAll(query);
 
     log.info('Busca finalizada com sucesso');
-
     return res.status(StatusCodes.OK).json(users);
   } catch (error) {
     const errorMsg = 'Erro ao buscar usuários';
@@ -98,10 +95,63 @@ const getById = async (req, res) => {
     }
 
     log.info(`Finalizando busca por usuário. userId = ${id}`);
-
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
     const errorMsg = 'Erro ao buscar usuário';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user, address } = req.body;
+
+    log.info(`Iniciando atualização do usuário. userId = ${id}`);
+    log.info('Verificando se usuário existe');
+
+    const existedUser = await service.getOnlyUserById(id);
+
+    if (!existedUser) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
+    if (user?.email) {
+      log.info(`Validando email = ${user.email}`);
+
+      const userWithSameEmail = await service.getByEmail(user.email);
+
+      if (userWithSameEmail && `${userWithSameEmail.id}` !== `${id}`) {
+        return res
+          .status(StatusCodes.CONFLICT)
+          .json({ error: 'Já existe um usuário com este email' });
+      }
+    }
+
+    if (user) {
+      log.info('Atualizando dados do usuário');
+      await service.update(id, user);
+    }
+
+    if (address) {
+      log.info('Atualizando dados do endereço');
+      await addressService.update(id, address);
+    }
+
+    log.info('Buscando dados atualizados do usuário');
+    const updatedUser = await service.getById(id);
+
+    log.info('Finalizando atualização');
+    return res.status(StatusCodes.OK).json(updatedUser);
+  } catch (error) {
+    const errorMsg = 'Erro ao atualizar usuário';
 
     log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
 
@@ -125,10 +175,10 @@ const remove = async (req, res) => {
         .json({ error: 'Usuário não encontrado' });
     }
 
+    log.info(`Removendo usuário. userID = ${id}`);
     await service.remove(user);
 
     log.info('Finalizando remoção de usuário.');
-
     return res.status(StatusCodes.OK).json('Usuário removido com sucesso.');
   } catch (error) {
     const errorMsg = 'Erro ao remover usuário';
@@ -145,5 +195,6 @@ module.exports = {
   create,
   getAll,
   getById,
+  update,
   remove,
 };

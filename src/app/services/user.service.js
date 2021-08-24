@@ -51,6 +51,12 @@ const getAll = async (query) => {
   return users;
 };
 
+const update = (id, data) => User.update(data, {
+  where: {
+    id,
+  },
+});
+
 const remove = (user) => user.destroy();
 
 module.exports = {
@@ -59,5 +65,6 @@ module.exports = {
   getById,
   getOnlyUserById,
   getAll,
+  update,
   remove,
 };
