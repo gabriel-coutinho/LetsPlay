@@ -1,6 +1,8 @@
 /* eslint no-param-reassign: "error" */
 
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('../../config/environment');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -51,6 +53,22 @@ module.exports = (sequelize, DataTypes) => {
     code,
   ) {
     return bcrypt.compare(code, this.forgetPasswordCode);
+  };
+
+  User.prototype.generateAuthToken = function generateAuthToken(
+    forgetPassword = false,
+  ) {
+    const { secret, expirationMinutes, expirationLogin } = config.JWT;
+
+    if (forgetPassword) {
+      return jwt.sign({ id: this.id }, secret, {
+        expiresIn: `${expirationMinutes}m`,
+      });
+    }
+
+    return jwt.sign({ id: this.id }, secret, {
+      expiresIn: `${expirationLogin}h`,
+    });
   };
 
   return User;

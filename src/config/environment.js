@@ -6,6 +6,7 @@ const environment = {
   API_PORT: process.env.API_PORT || 3000,
   JWT: {
     expirationMinutes: process.env.JWT_EXPIRES_TIME || 20,
+    expirationLogin: process.env.JWT_EXPIRES_TIME_LOGIN || 24,
     secret: process.env.JWT_SECRET,
   },
   EMAIL: {
