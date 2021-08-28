@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const { User, Address } = require('../models');
 // const log = require('../services/log.service');
 
@@ -57,6 +58,19 @@ const update = (id, data) => User.update(data, {
   },
 });
 
+const saveForgetPasswordCode = async (id, code) => {
+  const codeHash = await bcrypt.hash(`${code}`, 5);
+  const userData = {
+    forgetPasswordCode: codeHash,
+  };
+
+  await User.update(userData, {
+    where: {
+      id,
+    },
+  });
+};
+
 const remove = (user) => user.destroy();
 
 module.exports = {
@@ -66,5 +80,6 @@ module.exports = {
   getOnlyUserById,
   getAll,
   update,
+  saveForgetPasswordCode,
   remove,
 };
