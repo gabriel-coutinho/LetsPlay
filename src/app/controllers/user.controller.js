@@ -211,7 +211,7 @@ const forgetPassword = async (req, res) => {
       await service.saveForgetPasswordCode(user.id, code);
 
       log.info('Enviando codigo por email');
-      emailService.sendForgetPasswordEmail();
+      emailService.sendForgetPasswordEmail(email, code);
     }
 
     log.info('Finalizando processo de recuperação de senha.');
@@ -229,6 +229,28 @@ const forgetPassword = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { user } = req;
+    const { newPassword } = req.body;
+
+    log.info(`Iniciando atualização de senha. userEmail=${user.email}`);
+
+    await service.changePassword(user, newPassword);
+
+    log.info('Senha atualizada');
+    return res.status(StatusCodes.OK).json('Senha atualizada');
+  } catch (error) {
+    const errorMsg = 'Erro ao mudar senha.';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 module.exports = {
   create,
   getAll,
@@ -236,4 +258,5 @@ module.exports = {
   update,
   remove,
   forgetPassword,
+  changePassword,
 };

@@ -128,10 +128,22 @@ function transformUnit(parent, child, multiplier) {
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 const FIVE_MB = 5 * 1024 * 1024;
+const FORGET_PASSWORD_CODE_MIN = 1000;
+const FORGET_PASSWORD_CODE_MAX = 10000;
 
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 const normalizeQuery = (query) => query.replace(/\+/g, ' ');
+
+const getRandomNumber = (
+  min = FORGET_PASSWORD_CODE_MIN,
+  max = FORGET_PASSWORD_CODE_MAX,
+) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min) + min);
+};
 
 module.exports = {
   getDate,
@@ -140,5 +152,6 @@ module.exports = {
   transformUnit,
   capitalizeFirstLetter,
   normalizeQuery,
+  getRandomNumber,
   DATE_FORMAT,
 };

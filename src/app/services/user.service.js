@@ -71,6 +71,15 @@ const saveForgetPasswordCode = async (id, code) => {
   });
 };
 
+const changePassword = (user, newPassword) => {
+  const updatedUser = user;
+
+  updatedUser.password = newPassword;
+  updatedUser.forgetPasswordCode = null;
+
+  return updatedUser.save();
+};
+
 const remove = (user) => user.destroy();
 
 module.exports = {
@@ -81,5 +90,6 @@ module.exports = {
   getAll,
   update,
   saveForgetPasswordCode,
+  changePassword,
   remove,
 };
