@@ -15,6 +15,10 @@ const environment = {
     port: process.env.EMAIL_PORT,
     smtp: process.env.EMAIL_SMTP_HOST,
   },
+  FIREBASE: {
+    credentials: process.env.FIREBASE_CREDENTIALS,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  },
 };
 
 module.exports = environment;

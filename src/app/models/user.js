@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'address',
     });
+    User.hasOne(models.Image, {
+      foreignKey: 'userId',
+      as: 'image',
+    });
   };
 
   User.addHook('beforeSave', async (user) => {

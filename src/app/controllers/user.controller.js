@@ -9,7 +9,7 @@ const { StatusCodes } = httpStatus;
 
 const create = async (req, res) => {
   try {
-    const { user, address } = req.body;
+    const { user } = req.body;
 
     if (!user.email) {
       return res
@@ -42,9 +42,6 @@ const create = async (req, res) => {
 
     log.info('Criando usuário');
     const newUser = await service.create(user);
-
-    log.info(`Criando endereço. userId = ${newUser.id}`);
-    await addressService.create({ userId: newUser.id, ...address });
 
     log.info(`Buscando usuário por id = ${newUser.id}`);
     const userInfo = await service.getById(newUser.id);

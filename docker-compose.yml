@@ -35,6 +35,8 @@ services:
       GMAIL_PASSWORD: ${GMAIL_PASSWORD}
       EMAIL_PORT: 587
       EMAIL_SMTP_HOST: smtp.gmail.com
+      FIREBASE_CREDENTIALS: /app/letsplay-firebase.json
+      FIREBASE_STORAGE_BUCKET: ${FIREBASE_STORAGE_BUCKET}
     command: npm run start
 
   letsplay_db:

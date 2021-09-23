@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  Address.associate = function (models) {
+  Address.associate = (models) => {
     Address.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
