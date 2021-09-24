@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       token: DataTypes.STRING,
       firebaseUrl: {
-        type: DataTypes.STRING,
+        type: DataTypes.VIRTUAL,
         get() {
           return `https://firebasestorage.googleapis.com/v0/b/${
             FIREBASE.storageBucket
@@ -20,10 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   Image.associate = (models) => {
-    Image.belongsTo(models.User, {
-      foreignKey: 'userId',
+    Image.hasOne(models.User, {
+      foreignKey: 'imageId',
       as: 'user',
-      onDelete: 'CASCADE',
+    });
+    Image.hasOne(models.Sport, {
+      foreignKey: 'imageId',
+      as: 'sport',
     });
   };
   return Image;

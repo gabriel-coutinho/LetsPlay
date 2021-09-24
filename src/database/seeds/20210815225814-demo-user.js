@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const users = [
   {
+    addressId: 1,
     name: 'Master',
     lastName: '',
     email: 'master@email.com',
@@ -13,6 +14,7 @@ const users = [
     updatedAt: new Date(),
   },
   {
+    addressId: 2,
     name: 'Jake',
     lastName: 'The Dog',
     email: 'jake_the_dog@gmail.com',
@@ -22,6 +24,7 @@ const users = [
     updatedAt: new Date(),
   },
   {
+    addressId: 3,
     name: 'Marceline',
     lastName: 'Abadeer',
     email: 'Marceline_the_vampire_queen@gmail.com',

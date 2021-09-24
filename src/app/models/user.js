@@ -33,13 +33,28 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.associate = (models) => {
-    User.hasOne(models.Address, {
-      foreignKey: 'userId',
+    User.belongsTo(models.Address, {
+      foreignKey: 'addressId',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       as: 'address',
     });
-    User.hasOne(models.Image, {
-      foreignKey: 'userId',
+    User.belongsTo(models.Image, {
+      foreignKey: 'imageId',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       as: 'image',
+    });
+    User.hasMany(models.Post, {
+      foreignKey: 'ownerId',
+      as: 'myPosts',
+    });
+    User.belongsToMany(models.Post, {
+      through: 'UserPosts',
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+      as: 'posts',
+      foreignKey: 'userId',
     });
   };
 

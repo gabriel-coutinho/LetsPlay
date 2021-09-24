@@ -27,6 +27,18 @@ module.exports = {
     forgetPasswordCode: {
       type: Sequelize.STRING,
     },
+    addressId: {
+      type: Sequelize.INTEGER,
+      references: { model: 'Addresses', key: 'id' },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+    imageId: {
+      type: Sequelize.INTEGER,
+      references: { model: 'Images', key: 'id' },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

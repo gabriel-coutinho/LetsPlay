@@ -13,10 +13,13 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   Address.associate = (models) => {
-    Address.belongsTo(models.User, {
-      foreignKey: 'userId',
-      onDelete: 'CASCADE',
+    Address.hasOne(models.User, {
+      foreignKey: 'addressId',
       as: 'user',
+    });
+    Address.hasOne(models.Post, {
+      foreignKey: 'addressId',
+      as: 'post',
     });
   };
   return Address;

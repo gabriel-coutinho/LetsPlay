@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { User, Address } = require('../models');
+const { User, Address, Image } = require('../models');
 // const log = require('../services/log.service');
 
 const create = (data) => User.create(data);
@@ -16,6 +16,10 @@ const getById = (id) => User.findByPk(id, {
       model: Address,
       as: 'address',
     },
+    {
+      model: Image,
+      as: 'image',
+    },
   ],
 });
 
@@ -30,6 +34,10 @@ const getAll = async (query) => {
     {
       model: Address,
       as: 'address',
+    },
+    {
+      model: Image,
+      as: 'image',
     },
   ];
 

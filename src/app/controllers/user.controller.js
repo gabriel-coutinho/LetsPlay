@@ -117,7 +117,7 @@ const update = async (req, res) => {
     const existedUser = await service.getOnlyUserById(id);
 
     if (!existedUser) {
-      res
+      return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: 'Usuário não encontrado' });
     }
@@ -134,14 +134,18 @@ const update = async (req, res) => {
       }
     }
 
+    if (address) {
+      log.info('Atualizando dados do endereço');
+      if (existedUser.addressId) await addressService.update(existedUser.addressId, address);
+      else {
+        const newAddress = await addressService.create(address);
+        user.addressId = newAddress.id;
+      }
+    }
+
     if (user) {
       log.info('Atualizando dados do usuário');
       await service.update(id, user);
-    }
-
-    if (address) {
-      log.info('Atualizando dados do endereço');
-      await addressService.update(id, address);
     }
 
     log.info('Buscando dados atualizados do usuário');

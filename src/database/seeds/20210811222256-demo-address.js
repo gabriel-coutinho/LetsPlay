@@ -2,7 +2,6 @@
 
 const addresses = [
   {
-    userId: 1,
     street: 'Rua Curitiba',
     zipCode: '69317332',
     district: 'Equatorial',
@@ -14,7 +13,6 @@ const addresses = [
     updatedAt: new Date(),
   },
   {
-    userId: 2,
     street: 'Estrada Municipal Attílio Citton',
     zipCode: '95059850',
     district: 'Santo Antônio',
@@ -26,7 +24,6 @@ const addresses = [
     updatedAt: new Date(),
   },
   {
-    userId: 3,
     street: 'Rua Irlanda',
     zipCode: '86046360',
     district: 'Jardim Oscavo SantosJardim Oscavo Santos',
@@ -41,20 +38,7 @@ const addresses = [
 
 module.exports = {
   up: async (queryInterface) => {
-    for (const address of addresses) {
-      const existedUser = await queryInterface.rawSelect(
-        'Addresses',
-        {
-          where: {
-            userId: address.userId,
-          },
-        },
-        ['id'],
-      );
-
-      if (!existedUser || existedUser.length === 0) await queryInterface.bulkInsert('Addresses', [address], {});
-      else console.log('Esse usuário já possui um endereço cadastrado.');
-    }
+    for (const address of addresses) await queryInterface.bulkInsert('Addresses', [address], {});
   },
 
   down: (queryInterface) => queryInterface.bulkDelete('Addresses', addresses, {}),
