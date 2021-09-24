@@ -1,19 +1,22 @@
 const express = require('express');
 const controller = require('../controllers/user.controller');
-const auth = require('../middlewares/auth');
+const { verifyAuthorization } = require('../middlewares/auth');
+const multer = require('../../multer');
 
 const router = express.Router();
 
 router.post('/', controller.create);
 router.get('/', controller.getAll);
-router.put(
-  '/changePassword',
-  auth.verifyAuthorization,
-  controller.changePassword,
-);
+router.put('/changePassword', verifyAuthorization, controller.changePassword);
 router.post('/forgetPassword', controller.forgetPassword);
+router.put(
+  '/:id/image',
+  verifyAuthorization,
+  multer.single('file'),
+  controller.addImage,
+);
 router.get('/:id', controller.getById);
-router.put('/:id', auth.verifyAuthorization, controller.update);
-router.delete('/:id', auth.verifyAuthorization, controller.remove);
+router.put('/:id', verifyAuthorization, controller.update);
+router.delete('/:id', verifyAuthorization, controller.remove);
 
 module.exports = router;

@@ -3,6 +3,8 @@ const log = require('../services/log.service');
 const service = require('../services/user.service');
 const addressService = require('../services/address.service');
 const emailService = require('../services/email.service');
+const imageService = require('../services/image.service');
+const firebaseService = require('../services/firebase.service');
 const util = require('../services/util.service');
 
 const { StatusCodes } = httpStatus;
@@ -252,6 +254,60 @@ const changePassword = async (req, res) => {
   }
 };
 
+const addImage = async (req, res) => {
+  try {
+    const { file } = req;
+    const { id } = req.params;
+
+    log.info(`Iniciando adição de imagem ao usuário de id = ${id}`);
+    log.info('Buscando o usuário');
+
+    const user = await service.getOnlyUserById(id);
+
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
+    log.info(`Fazendo upload da imagem. file=${file}`);
+    const uploadPicture = await firebaseService.upload(file);
+
+    let picture = null;
+    if (!user.imageId) {
+      log.info('Criando imagem no banco de dados');
+      picture = await imageService.create(uploadPicture);
+      user.imageId = picture.id;
+      await service.update(id, user.dataValues);
+    } else {
+      log.info('Deletando imagem antiga no banco de dados');
+      const existedImage = await imageService.getById(user.imageId);
+      firebaseService.delet(existedImage.name);
+
+      log.info('Atualizando imagem no banco de dados');
+      await imageService.update(user.imageId, uploadPicture);
+      picture = await imageService.getById(user.imageId);
+    }
+
+    log.info('Finalizando a adição de imagem');
+
+    const result = {
+      ...user.dataValues,
+      image: picture.firebaseUrl,
+    };
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    const errorMsg = 'Erro ao adicionar imagem';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 module.exports = {
   create,
   getAll,
@@ -260,4 +316,5 @@ module.exports = {
   remove,
   forgetPassword,
   changePassword,
+  addImage,
 };
