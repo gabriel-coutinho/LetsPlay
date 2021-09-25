@@ -1,5 +1,11 @@
-module.exports = (sequelize) => {
-  const UserPost = sequelize.define('UserPost', {}, {});
+module.exports = (sequelize, DataTypes) => {
+  const UserPost = sequelize.define(
+    'UserPost',
+    {
+      name: DataTypes.STRING,
+    },
+    {},
+  );
   UserPost.associate = (models) => {
     UserPost.belongsTo(models.User, {
       foreignKey: 'userId',

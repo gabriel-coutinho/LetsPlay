@@ -2,7 +2,6 @@ const express = require('express');
 
 const user = require('./app/routes/user.route');
 const sport = require('./app/routes/sport.route');
-const post = require('./app/routes/post.route');
 const auth = require('./app/routes/auth.route');
 
 const router = express.Router();
@@ -14,6 +13,5 @@ router.get('/', (_, res) => {
 router.use('/auth', auth);
 router.use('/user', user);
 router.use('/sport', sport);
-router.use('/post', post);
 
 module.exports = router;
