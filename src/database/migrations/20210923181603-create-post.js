@@ -8,15 +8,22 @@ module.exports = {
     },
     title: {
       type: Sequelize.STRING,
+      allowNull: false,
+      unique: false,
     },
     describe: {
       type: Sequelize.STRING,
     },
     price: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.DECIMAL(20, 2),
+      defaultValue: '0.00',
     },
     date: {
       type: Sequelize.DATE,
+    },
+    vacancy: {
+      type: Sequelize.INTEGER,
+      defaultValue: '0',
     },
     sportId: {
       type: Sequelize.INTEGER,
