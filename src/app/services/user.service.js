@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
-const { User, Address, Image } = require('../models');
+const {
+  User, Sport, Address, Image, Post,
+} = require('../models');
 // const log = require('../services/log.service');
 
 const create = (data) => User.create(data);
@@ -88,6 +90,28 @@ const changePassword = (user, newPassword) => {
   return updatedUser.save();
 };
 
+const getPosts = (id) => User.findAll({
+  where: {
+    id,
+  },
+  include: [
+    {
+      model: Post,
+      as: 'myPosts',
+      include: [
+        {
+          model: Sport,
+          as: 'sport',
+        },
+        {
+          model: Address,
+          as: 'address',
+        },
+      ],
+    },
+  ],
+});
+
 const remove = (user) => user.destroy();
 
 module.exports = {
@@ -99,5 +123,6 @@ module.exports = {
   update,
   saveForgetPasswordCode,
   changePassword,
+  getPosts,
   remove,
 };

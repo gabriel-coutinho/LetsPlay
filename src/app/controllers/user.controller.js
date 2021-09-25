@@ -2,6 +2,7 @@ const httpStatus = require('http-status-codes');
 const log = require('../services/log.service');
 const service = require('../services/user.service');
 const addressService = require('../services/address.service');
+const postService = require('../services/post.service');
 const emailService = require('../services/email.service');
 const imageService = require('../services/image.service');
 const firebaseService = require('../services/firebase.service');
@@ -308,6 +309,33 @@ const addImage = async (req, res) => {
   }
 };
 
+const getPostsByUserId = async (req, res) => {
+  try {
+    const { query } = req;
+    let { id } = req.params;
+
+    if (id === 'me') {
+      id = req.user.id;
+    }
+
+    log.info(
+      `Iniciando listagem posts do usuário, userId: ${id}, page: ${query.page}`,
+    );
+    const posts = await postService.getPostsByUserId(id, query);
+
+    log.info('Busca finalizada com sucesso');
+    return res.status(StatusCodes.OK).json(posts);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar posts do usuário';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 module.exports = {
   create,
   getAll,
@@ -317,4 +345,5 @@ module.exports = {
   forgetPassword,
   changePassword,
   addImage,
+  getPostsByUserId,
 };

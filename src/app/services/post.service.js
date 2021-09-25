@@ -81,6 +81,55 @@ const update = (id, data) => Post.update(data, {
   },
 });
 
+const getPostsByUserId = async (ownerId, pagination) => {
+  const page = parseInt(pagination.page, 10);
+  const pageSize = parseInt(pagination.pageSize, 10);
+  let offset = null;
+  let posts = null;
+  const where = {
+    ownerId,
+  };
+  const include = [
+    {
+      model: Sport,
+      as: 'sport',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
+    },
+    {
+      model: Address,
+      as: 'address',
+    },
+    {
+      model: User,
+      as: 'owner',
+    },
+  ];
+
+  if (page && pageSize) offset = (page - 1) * pageSize;
+
+  if (offset !== null) {
+    const options = {
+      limit: pageSize,
+      offset,
+      distinct: true,
+      include,
+      where,
+    };
+    posts = await Post.findAndCountAll(options);
+
+    posts.pages = Math.ceil(posts.count / pageSize);
+  } else {
+    posts = await Post.findAll({ where, include });
+  }
+
+  return posts;
+};
+
 const remove = (post) => post.destroy();
 
 module.exports = {
@@ -89,5 +138,6 @@ module.exports = {
   getOnlyPostById,
   getAll,
   update,
+  getPostsByUserId,
   remove,
 };

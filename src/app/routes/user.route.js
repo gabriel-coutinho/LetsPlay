@@ -15,6 +15,7 @@ router.put(
   multer.single('file'),
   controller.addImage,
 );
+router.get('/:id/posts', verifyAuthorization, controller.getPostsByUserId);
 router.get('/:id', controller.getById);
 router.put('/:id', verifyAuthorization, controller.update);
 router.delete('/:id', verifyAuthorization, controller.remove);
