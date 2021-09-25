@@ -2,10 +2,21 @@ module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define(
     'Post',
     {
-      title: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: false,
+      },
       describe: DataTypes.STRING,
-      price: DataTypes.INTEGER,
+      price: {
+        type: DataTypes.DECIMAL(20, 2),
+        defaultValue: '0.00',
+      },
       date: DataTypes.DATE,
+      vacancy: {
+        type: DataTypes.INTEGER,
+        defaultValue: '0',
+      },
     },
     {},
   );
