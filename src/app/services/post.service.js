@@ -104,10 +104,6 @@ const getPostsByUserId = async (ownerId, pagination) => {
       model: Address,
       as: 'address',
     },
-    {
-      model: User,
-      as: 'owner',
-    },
   ];
 
   if (page && pageSize) offset = (page - 1) * pageSize;
@@ -130,6 +126,19 @@ const getPostsByUserId = async (ownerId, pagination) => {
   return posts;
 };
 
+const usersInPost = (id) => Post.findByPk(id, {
+  include: [
+    {
+      model: User,
+      as: 'users',
+    },
+    {
+      model: User,
+      as: 'owner',
+    },
+  ],
+});
+
 const remove = (post) => post.destroy();
 
 module.exports = {
@@ -139,5 +148,6 @@ module.exports = {
   getAll,
   update,
   getPostsByUserId,
+  usersInPost,
   remove,
 };

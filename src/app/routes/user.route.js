@@ -6,7 +6,7 @@ const multer = require('../../multer');
 const router = express.Router();
 
 router.post('/', controller.create);
-router.get('/', controller.getAll);
+router.get('/', verifyAuthorization, controller.getAll);
 router.put('/changePassword', verifyAuthorization, controller.changePassword);
 router.post('/forgetPassword', controller.forgetPassword);
 router.put(
@@ -16,7 +16,7 @@ router.put(
   controller.addImage,
 );
 router.get('/:id/posts', verifyAuthorization, controller.getPostsByUserId);
-router.get('/:id', controller.getById);
+router.get('/:id', verifyAuthorization, controller.getById);
 router.put('/:id', verifyAuthorization, controller.update);
 router.delete('/:id', verifyAuthorization, controller.remove);
 

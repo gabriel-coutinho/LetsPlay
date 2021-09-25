@@ -2,7 +2,6 @@ const httpStatus = require('http-status-codes');
 const log = require('../services/log.service');
 const service = require('../services/post.service');
 const serviceAddress = require('../services/address.service');
-const serviceUserPost = require('../services/userPost.service');
 
 const { StatusCodes } = httpStatus;
 
@@ -32,11 +31,8 @@ const create = async (req, res) => {
     log.info('Criando post');
     const date = new Date(post.date);
     post.date = date;
+    post.ownerId = user.id;
     const newPost = await service.create(post);
-
-    log.info('Criando associação post usuário logado.');
-    const association = { userId: user.id, postId: newPost.id };
-    serviceUserPost.create(association);
 
     log.info(`Buscando post por id = ${newPost.id}`);
     const postInfo = await service.getById(newPost.id);
@@ -147,6 +143,37 @@ const update = async (req, res) => {
   }
 };
 
+const usersInPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    log.info(`Iniciando busca por usuários do post. postId = ${id}`);
+    log.info('Verificando se post existe');
+
+    const post = await service.getOnlyPostById(id);
+
+    if (!post) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Post não encontrado' });
+    }
+
+    log.info('Buscando usuários do post.');
+    const usersInPostInfo = await service.usersInPost(id);
+
+    log.info(`Finalizando busca por usuários do post. postId = ${id}`);
+    return res.status(StatusCodes.OK).json(usersInPostInfo);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar usuários do post.';
+
+    log.error(errorMsg, 'app/controllers/post.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -182,5 +209,6 @@ module.exports = {
   getAll,
   getById,
   update,
+  usersInPost,
   remove,
 };
