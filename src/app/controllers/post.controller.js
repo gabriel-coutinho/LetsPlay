@@ -4,6 +4,7 @@ const service = require('../services/post.service');
 const serviceAddress = require('../services/address.service');
 
 const { StatusCodes } = httpStatus;
+const { STATUS } = require('../util/constants');
 
 const create = async (req, res) => {
   try {
@@ -32,6 +33,7 @@ const create = async (req, res) => {
     const date = new Date(post.date);
     post.date = date;
     post.ownerId = user.id;
+    post.status = STATUS.OPEN;
     const newPost = await service.create(post);
 
     log.info(`Buscando post por id = ${newPost.id}`);
@@ -88,6 +90,35 @@ const getById = async (req, res) => {
     return res.status(StatusCodes.OK).json(post);
   } catch (error) {
     const errorMsg = 'Erro ao buscar post';
+
+    log.error(errorMsg, 'app/controllers/post.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
+const getByStatus = async (req, res) => {
+  try {
+    const { query } = req;
+
+    if (!query.status) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: 'Busca por status precisa de ao menos um status.' });
+    }
+
+    log.info(
+      `Iniciando busca por posts. status = ${query.status}, page: ${query.page}`,
+    );
+
+    const posts = await service.getByStatus(query);
+
+    log.info('Busca finalizada com sucesso');
+    return res.status(StatusCodes.OK).json(posts);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar post por status';
 
     log.error(errorMsg, 'app/controllers/post.controller.js', error.message);
 
@@ -208,6 +239,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  getByStatus,
   update,
   usersInPost,
   remove,

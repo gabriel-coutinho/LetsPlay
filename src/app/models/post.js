@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: '0',
       },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: false,
+      },
     },
     {},
   );
@@ -43,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
       through: 'UserPosts',
       as: 'users',
       foreignKey: 'postId',
+    });
+    Post.hasMany(models.Request, {
+      foreignKey: 'postId',
+      as: 'requests',
     });
   };
   return Post;

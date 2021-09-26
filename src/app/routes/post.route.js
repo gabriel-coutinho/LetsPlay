@@ -5,7 +5,8 @@ const { verifyAuthorization } = require('../middlewares/auth');
 const router = express.Router();
 
 router.post('/', verifyAuthorization, controller.create);
-router.get('/', verifyAuthorization, controller.getAll);
+router.get('/', verifyAuthorization, controller.getByStatus);
+router.get('/all', verifyAuthorization, controller.getAll);
 router.get('/:id/users', verifyAuthorization, controller.usersInPost);
 router.get('/:id', verifyAuthorization, controller.getById);
 router.put('/:id', verifyAuthorization, controller.update);

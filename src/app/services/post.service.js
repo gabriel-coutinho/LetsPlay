@@ -126,6 +126,57 @@ const getPostsByUserId = async (ownerId, pagination) => {
   return posts;
 };
 
+const getByStatus = async (params) => {
+  const page = parseInt(params.page, 10);
+  const pageSize = parseInt(params.pageSize, 10);
+  const status = params.status.split(';');
+  let offset = null;
+  let posts = null;
+
+  const where = {
+    status,
+  };
+  const include = [
+    {
+      model: Sport,
+      as: 'sport',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
+    },
+    {
+      model: Address,
+      as: 'address',
+    },
+    {
+      model: User,
+      as: 'owner',
+    },
+  ];
+
+  if (page && pageSize) offset = (page - 1) * pageSize;
+
+  if (offset !== null) {
+    const options = {
+      limit: pageSize,
+      offset,
+      distinct: true,
+      include,
+      where,
+    };
+    posts = await Post.findAndCountAll(options);
+
+    posts.pages = Math.ceil(posts.count / pageSize);
+  } else {
+    posts = await Post.findAll({ where, include });
+  }
+
+  return posts;
+};
+
 const usersInPost = (id) => Post.findByPk(id, {
   include: [
     {
@@ -148,6 +199,7 @@ module.exports = {
   getAll,
   update,
   getPostsByUserId,
+  getByStatus,
   usersInPost,
   remove,
 };

@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
       as: 'posts',
       foreignKey: 'userId',
     });
+    User.hasMany(models.Request, {
+      foreignKey: 'userId',
+      as: 'requests',
+    });
   };
 
   User.addHook('beforeSave', async (user) => {
