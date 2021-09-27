@@ -1,5 +1,5 @@
 const {
-  Post, Sport, Address, User, Image,
+  Post, Sport, Address, User, Image, Request,
 } = require('../models');
 // const log = require('../services/log.service');
 
@@ -129,7 +129,9 @@ const getPostsByUserId = async (ownerId, pagination) => {
 const getByStatus = async (params) => {
   const page = parseInt(params.page, 10);
   const pageSize = parseInt(params.pageSize, 10);
-  const status = params.status.split(';');
+  const status = params.status
+    ? params.status.split(';')
+    : ['OPEN', 'FULL', 'EXPIRED'];
   let offset = null;
   let posts = null;
 
@@ -190,6 +192,21 @@ const usersInPost = (id) => Post.findByPk(id, {
   ],
 });
 
+const getRequestsByPost = (id, status) => {
+  let where = {
+    postId: id,
+  };
+
+  if (status) {
+    where = {
+      ...where,
+      status,
+    };
+  }
+
+  return Request.findAll({ where });
+};
+
 const remove = (post) => post.destroy();
 
 module.exports = {
@@ -201,5 +218,6 @@ module.exports = {
   getPostsByUserId,
   getByStatus,
   usersInPost,
+  getRequestsByPost,
   remove,
 };

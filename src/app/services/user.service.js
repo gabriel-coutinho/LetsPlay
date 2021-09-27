@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
-const { User, Address, Image } = require('../models');
+const {
+  User, Address, Image, Request,
+} = require('../models');
 // const log = require('../services/log.service');
 
 const create = (data) => User.create(data);
@@ -88,6 +90,21 @@ const changePassword = (user, newPassword) => {
   return updatedUser.save();
 };
 
+const getRequestsByUser = (id, status) => {
+  let where = {
+    userId: id,
+  };
+
+  if (status) {
+    where = {
+      ...where,
+      status,
+    };
+  }
+
+  return Request.findAll({ where });
+};
+
 const remove = (user) => user.destroy();
 
 module.exports = {
@@ -99,5 +116,6 @@ module.exports = {
   update,
   saveForgetPasswordCode,
   changePassword,
+  getRequestsByUser,
   remove,
 };

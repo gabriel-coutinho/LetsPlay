@@ -172,6 +172,7 @@ const remove = async (req, res) => {
     const { id } = req.params;
 
     log.info(`Iniciando remoção de usuário. userId = ${id}`);
+    log.info('Verificando se usuário existe');
 
     const user = await service.getOnlyUserById(id);
 
@@ -321,12 +322,53 @@ const getPostsByUserId = async (req, res) => {
     log.info(
       `Iniciando listagem posts do usuário, userId: ${id}, page: ${query.page}`,
     );
+    log.info('Verificando se usuário existe');
+
+    const user = await service.getOnlyUserById(id);
+
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
     const posts = await postService.getPostsByUserId(id, query);
 
     log.info('Busca finalizada com sucesso');
     return res.status(StatusCodes.OK).json(posts);
   } catch (error) {
     const errorMsg = 'Erro ao buscar posts do usuário';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
+const getRequestsByUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    log.info(`Iniciando busca das solicitações do usuário. userId = ${id}`);
+    log.info('Verificando se usuário existe');
+
+    const user = await service.getOnlyUserById(id);
+
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
+    log.info('Buscando solicitações do usuário.');
+    const requestByUserInfo = await service.getRequestsByUser(id);
+
+    log.info(`Finalizando busca por solicitações do usuário. userId = ${id}`);
+    return res.status(StatusCodes.OK).json(requestByUserInfo);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar solicitações do usuário.';
 
     log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
 
@@ -346,4 +388,5 @@ module.exports = {
   changePassword,
   addImage,
   getPostsByUserId,
+  getRequestsByUser,
 };

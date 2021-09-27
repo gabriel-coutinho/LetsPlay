@@ -205,6 +205,38 @@ const usersInPost = async (req, res) => {
   }
 };
 
+const getRequestsByPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.query;
+
+    log.info(`Iniciando busca das solicitações do post. postId = ${id}`);
+    log.info('Verificando se post existe');
+
+    const post = await service.getOnlyPostById(id);
+
+    if (!post) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Post não encontrado' });
+    }
+
+    log.info('Buscando solicitações do post.');
+    const requestByPostInfo = await service.getRequestsByPost(id, status);
+
+    log.info(`Finalizando busca por solicitações do post. postId = ${id}`);
+    return res.status(StatusCodes.OK).json(requestByPostInfo);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar solicitações do post.';
+
+    log.error(errorMsg, 'app/controllers/post.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -242,5 +274,6 @@ module.exports = {
   getByStatus,
   update,
   usersInPost,
+  getRequestsByPost,
   remove,
 };
