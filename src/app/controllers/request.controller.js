@@ -137,12 +137,10 @@ const update = async (req, res) => {
       if (request.status === STATUS.ACCEPTED) {
         log.info('Verificando se o usuário logado é dono do post.');
         if (user.id !== existedRequest.post.ownerId) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({
-              error:
-                'Solicitação não pode ser aceita por usuário diferente do dono do post.',
-            });
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            error:
+              'Solicitação não pode ser aceita por usuário diferente do dono do post.',
+          });
         }
         log.info('Adicionando usuário ao post');
         serviceUserPost.create({

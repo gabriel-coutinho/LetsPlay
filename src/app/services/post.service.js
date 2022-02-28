@@ -24,6 +24,12 @@ const getById = (id) => Post.findByPk(id, {
     {
       model: User,
       as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
     },
   ],
 });
@@ -53,6 +59,12 @@ const getAll = async (query) => {
     {
       model: User,
       as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
     },
   ];
 
@@ -156,6 +168,12 @@ const getByStatus = async (params) => {
     {
       model: User,
       as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
     },
   ];
 
@@ -188,6 +206,12 @@ const usersInPost = (id) => Post.findByPk(id, {
     {
       model: User,
       as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
     },
   ],
 });
