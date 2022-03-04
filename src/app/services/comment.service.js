@@ -1,12 +1,12 @@
-const { Request, User, Post } = require('../models');
+const { Comment, User, Post } = require('../models');
 
-const create = (data) => Request.create(data);
+const create = (data) => Comment.create(data);
 
-const getById = (id) => Request.findByPk(id, {
+const getById = (id) => Comment.findByPk(id, {
   include: [
     {
       model: User,
-      as: 'user',
+      as: 'owner',
     },
     {
       model: Post,
@@ -15,17 +15,17 @@ const getById = (id) => Request.findByPk(id, {
   ],
 });
 
-const getOnlyRequestById = (id) => Request.findByPk(id);
+const getOnlyCommentById = (id) => Comment.findByPk(id);
 
 const getAll = async (query) => {
   const page = parseInt(query.page, 10);
   const pageSize = parseInt(query.pageSize, 10);
   let offset = null;
-  let requests = null;
+  let comments = null;
   const include = [
     {
       model: User,
-      as: 'user',
+      as: 'owner',
     },
     {
       model: Post,
@@ -42,28 +42,28 @@ const getAll = async (query) => {
       distinct: true,
       include,
     };
-    requests = await Request.findAndCountAll(options);
+    comments = await Comment.findAndCountAll(options);
 
-    requests.pages = Math.ceil(requests.count / pageSize);
+    comments.pages = Math.ceil(comments.count / pageSize);
   } else {
-    requests = await Request.findAll({ include });
+    comments = await Comment.findAll({ include });
   }
 
-  return requests;
+  return comments;
 };
 
-const update = (id, data) => Request.update(data, {
+const update = (id, data) => Comment.update(data, {
   where: {
     id,
   },
 });
 
-const remove = (request) => request.destroy();
+const remove = (comment) => comment.destroy();
 
 module.exports = {
   create,
   getById,
-  getOnlyRequestById,
+  getOnlyCommentById,
   getAll,
   update,
   remove,

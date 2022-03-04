@@ -24,11 +24,6 @@ const create = async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: 'postId é obrigatório na criação de uma solicitação' });
     }
-    if (!request.postId) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: 'postId é obrigatório na criação de uma solicitação' });
-    }
 
     log.info(`Verificando existência do usuário. userId:${request.userId}.`);
     const existedUser = await serviceUser.getOnlyUserById(request.userId);

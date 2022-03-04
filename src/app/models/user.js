@@ -60,6 +60,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'requests',
     });
+    User.hasMany(models.Comment, {
+      foreignKey: 'ownerId',
+      as: 'comments',
+    });
   };
 
   User.addHook('beforeSave', async (user) => {

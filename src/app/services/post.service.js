@@ -1,5 +1,11 @@
 const {
-  Post, Sport, Address, User, Image, Request,
+  Post,
+  Sport,
+  Address,
+  User,
+  Image,
+  Request,
+  Comment,
 } = require('../models');
 // const log = require('../services/log.service');
 
@@ -28,6 +34,22 @@ const getById = (id) => Post.findByPk(id, {
         {
           model: Image,
           as: 'image',
+        },
+      ],
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
         },
       ],
     },
@@ -63,6 +85,22 @@ const getAll = async (query) => {
         {
           model: Image,
           as: 'image',
+        },
+      ],
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
         },
       ],
     },
@@ -115,6 +153,22 @@ const getPostsByUserId = async (ownerId, pagination) => {
     {
       model: Address,
       as: 'address',
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
+        },
+      ],
     },
   ];
 
@@ -172,6 +226,22 @@ const getByStatus = async (params) => {
         {
           model: Image,
           as: 'image',
+        },
+      ],
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
         },
       ],
     },
