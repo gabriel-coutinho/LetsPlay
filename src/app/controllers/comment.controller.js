@@ -128,11 +128,9 @@ const update = async (req, res) => {
     }
 
     if (!comment || !comment.content) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({
-          error: 'content é obrigatório na atualização de um comentário.',
-        });
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'content é obrigatório na atualização de um comentário.',
+      });
     }
 
     log.info('Atualizando dados do comentário');

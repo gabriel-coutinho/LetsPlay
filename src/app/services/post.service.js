@@ -58,6 +58,8 @@ const getById = (id) => Post.findByPk(id, {
 
 const getOnlyPostById = (id) => Post.findByPk(id);
 
+const getAllNoPagination = () => Post.findAll();
+
 const getAll = async (query) => {
   const page = parseInt(query.page, 10);
   const pageSize = parseInt(query.pageSize, 10);
@@ -307,6 +309,7 @@ module.exports = {
   create,
   getById,
   getOnlyPostById,
+  getAllNoPagination,
   getAll,
   update,
   getPostsByUserId,
