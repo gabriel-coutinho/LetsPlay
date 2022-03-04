@@ -1,12 +1,11 @@
 const express = require('express');
 const controller = require('../controllers/user.controller');
-const { verifyAuthorization } = require('../middlewares/auth');
+const { verifyAuthorization, loggedUser } = require('../middlewares/auth');
 const multer = require('../../multer');
 
 const router = express.Router();
-
-router.post('/', controller.create);
 router.get('/', verifyAuthorization, controller.getAll);
+router.get('/loggedUser', loggedUser);
 router.put('/changePassword', verifyAuthorization, controller.changePassword);
 router.post('/forgetPassword', controller.forgetPassword);
 router.put(
