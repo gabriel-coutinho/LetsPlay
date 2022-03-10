@@ -1,16 +1,22 @@
-const postService = require('../services/post.service');
+const { Op } = require('sequelize');
+const { Post } = require('../models');
 const { STATUS } = require('./constants');
+const log = require('../services/log.service');
 
 const expirePosts = async () => {
-  const posts = await postService.getAllNoPagination();
+  log.info('Atualizando status dos Posts com datas expiradas');
   const now = new Date();
-  posts.map(async (post) => {
-    if (post.date.getTime() < now && post.status !== STATUS.EXPIRED) {
-      const updatedPost = { ...post };
-      updatedPost.status = STATUS.EXPIRED;
-      await postService.update(updatedPost.id, updatedPost);
-    }
-  });
+  await Post.update(
+    { status: STATUS.EXPIRED },
+    {
+      where: {
+        date: {
+          [Op.lt]: now,
+        },
+      },
+    },
+  );
+  log.info('Fim da atualização do status dos Posts com datas expiradas');
 };
 
 module.exports = {

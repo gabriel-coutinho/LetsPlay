@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/', verifyAuthorization, controller.getAll);
 router.get('/loggedUser', loggedUser);
 router.put('/changePassword', verifyAuthorization, controller.changePassword);
+router.post('/', controller.create);
 router.post('/forgetPassword', controller.forgetPassword);
 router.put(
   '/:id/image',

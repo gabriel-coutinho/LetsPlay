@@ -1,7 +1,6 @@
 const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
-// const cron = require('node-cron');
 
 const routes = require('./routes');
 
@@ -20,8 +19,5 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/', routes);
-
-// Schedule functions
-// cron.schedule('0 0,12 * * * *',);
 
 module.exports = app;

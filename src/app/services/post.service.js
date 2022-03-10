@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const {
   Post,
   Sport,
@@ -7,7 +8,6 @@ const {
   Request,
   Comment,
 } = require('../models');
-// const log = require('../services/log.service');
 
 const create = (data) => Post.create(data);
 
@@ -197,15 +197,25 @@ const getPostsByUserId = async (ownerId, pagination) => {
 const getByStatus = async (params) => {
   const page = parseInt(params.page, 10);
   const pageSize = parseInt(params.pageSize, 10);
+  const now = new Date();
   const status = params.status
     ? params.status.split(';')
     : ['OPEN', 'FULL', 'EXPIRED'];
+  const { date } = params;
   let offset = null;
   let posts = null;
 
-  const where = {
-    status,
-  };
+  const where = date
+    ? {
+      status,
+      date: {
+        [Op.lt]: now,
+      },
+    }
+    : {
+      status,
+    };
+
   const include = [
     {
       model: Sport,

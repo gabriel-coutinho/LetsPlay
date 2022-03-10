@@ -15,4 +15,7 @@ RUN npm install --no-optional --verbose
 
 RUN mkdir logs
 
+ENV TZ=America/Recife
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 COPY . /app
