@@ -15,6 +15,45 @@ const getById = (id) => Comment.findByPk(id, {
   ],
 });
 
+const getByPostId = async (postId, pagination) => {
+  const page = parseInt(pagination.page, 10);
+  const pageSize = parseInt(pagination.pageSize, 10);
+  let offset = null;
+  let comments = null;
+  const where = {
+    postId,
+  };
+  const include = [
+    {
+      model: User,
+      as: 'owner',
+    },
+    {
+      model: Post,
+      as: 'post',
+    },
+  ];
+
+  if (page && pageSize) offset = (page - 1) * pageSize;
+
+  if (offset !== null) {
+    const options = {
+      limit: pageSize,
+      offset,
+      distinct: true,
+      include,
+      where,
+    };
+    comments = await Comment.findAndCountAll(options);
+
+    comments.pages = Math.ceil(comments.count / pageSize);
+  } else {
+    comments = await Comment.findAll({ where, include });
+  }
+
+  return comments;
+};
+
 const getOnlyCommentById = (id) => Comment.findByPk(id);
 
 const getAll = async (query) => {
@@ -63,6 +102,7 @@ const remove = (comment) => comment.destroy();
 module.exports = {
   create,
   getById,
+  getByPostId,
   getOnlyCommentById,
   getAll,
   update,

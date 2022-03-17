@@ -112,6 +112,27 @@ const getById = async (req, res) => {
   }
 };
 
+const getByPostId = async (req, res) => {
+  try {
+    const { query } = req;
+    const { postId } = req.params;
+
+    log.info(`Iniciando busca por comentários. postId = ${postId}`);
+    const comments = await service.getByPostId(postId, query);
+
+    log.info('Busca finalizada com sucesso');
+    return res.status(StatusCodes.OK).json(comments);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar comentários pelo postId';
+
+    log.error(errorMsg, 'app/controllers/comment.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 const update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -186,6 +207,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  getByPostId,
   update,
   remove,
 };
