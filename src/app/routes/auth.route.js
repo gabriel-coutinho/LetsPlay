@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/login', controller.login);
 router.post('/verifyCode', controller.verifyCode);
+router.get('/verifyToken', controller.verifyToken);
 
 module.exports = router;
