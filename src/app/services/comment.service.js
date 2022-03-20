@@ -34,6 +34,8 @@ const getByPostId = async (postId, pagination) => {
     },
   ];
 
+  const order = [['createdAt', 'DESC']];
+
   if (page && pageSize) offset = (page - 1) * pageSize;
 
   if (offset !== null) {
@@ -43,12 +45,13 @@ const getByPostId = async (postId, pagination) => {
       distinct: true,
       include,
       where,
+      order,
     };
     comments = await Comment.findAndCountAll(options);
 
     comments.pages = Math.ceil(comments.count / pageSize);
   } else {
-    comments = await Comment.findAll({ where, include });
+    comments = await Comment.findAll({ where, include, order });
   }
 
   return comments;
