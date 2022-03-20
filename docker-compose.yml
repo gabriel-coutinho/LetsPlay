@@ -15,7 +15,7 @@ services:
     networks: 
       - backend
     depends_on: 
-      - letsplay_db
+      - letsplay-db
     ports:
       - "3030:3030"
     env_file: 
@@ -25,7 +25,7 @@ services:
       BASE_URL: localhost
       DB_DIALECT: postgres
       DB_PORT: 5432
-      DB_HOST: letsplay_db
+      DB_HOST: letsplay-db
       DB_NAME: LetsPlay
       DB_USERNAME: postgres
       DB_PASSWORD: ${DB_PASSWORD}
@@ -39,9 +39,9 @@ services:
       FIREBASE_STORAGE_BUCKET: ${FIREBASE_STORAGE_BUCKET}
     command: npm run start
 
-  letsplay_db:
+  letsplay-db:
     image: postgres
-    container_name: 'letsplay_db'
+    container_name: 'letsplay-db'
     restart: unless-stopped
     volumes:
       - ./config/database/init.sql:/data/application/init.sql
@@ -62,7 +62,7 @@ services:
     container_name: 'pgadmin4_letsplay'
     restart: unless-stopped
     depends_on: 
-      - letsplay_db
+      - letsplay-db
     volumes: 
       - pgadmin-data:/var/lib/pgadmin
     networks: 
