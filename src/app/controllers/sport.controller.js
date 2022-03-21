@@ -16,7 +16,7 @@ const create = async (req, res) => {
         .json({ error: 'Nome é obrigatório na criação de um esporte' });
     }
 
-    log.info(`Inicializando criação do esporte. esporte nome = ${sport.nome}.`);
+    log.info(`Inicializando criação do esporte. esporte nome = ${sport.name}.`);
     log.info('Validando se há algum esporte com o mesmo nome');
 
     const sportWithSameName = await service.getByName(sport.name);
