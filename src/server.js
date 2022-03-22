@@ -6,7 +6,7 @@ const LogService = require('./app/services/log.service');
 
 const environment = require('./config/environment');
 
-const { API_PORT } = environment;
+const { PORT } = environment;
 
 const app = require('./app');
 
@@ -15,6 +15,6 @@ cron.schedule('0 0,12 * * *', () => {
   expirePosts();
 });
 
-app.listen(API_PORT, () => {
-  LogService.log(`API rodando na porta ${API_PORT}`);
+app.listen(PORT, () => {
+  LogService.log(`API rodando na porta ${PORT}`);
 });

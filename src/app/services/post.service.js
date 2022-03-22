@@ -153,6 +153,16 @@ const getPostsByUserId = async (ownerId, pagination) => {
       ],
     },
     {
+      model: User,
+      as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
+    },
+    {
       model: Address,
       as: 'address',
     },

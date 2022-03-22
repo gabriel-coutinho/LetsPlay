@@ -21,7 +21,7 @@ services:
     env_file: 
       - .env
     environment:
-      API_PORT: 3030
+      PORT: 3030
       BASE_URL: localhost
       DB_DIALECT: postgres
       DB_PORT: 5432
