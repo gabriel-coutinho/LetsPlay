@@ -20,6 +20,12 @@ const create = async (req, res) => {
         .json({ error: 'Email é obrigatório na criação do usuário' });
     }
 
+    if (!user.gender) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: 'Gênero é obrigatório na criação do usuário' });
+    }
+
     if (!user.phoneNumber) {
       return res
         .status(StatusCodes.BAD_REQUEST)

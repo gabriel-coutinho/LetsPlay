@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       date: DataTypes.DATE,
       vacancy: {
         type: DataTypes.INTEGER,
+        defaultValue: '1',
+      },
+      usersCount: {
+        type: DataTypes.INTEGER,
         defaultValue: '0',
       },
       status: {

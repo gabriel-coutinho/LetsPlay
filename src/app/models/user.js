@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         allowNull: false,
       },
+      gender: {
+        type: DataTypes.STRING,
+        unique: false,
+        allowNull: false,
+      },
       password: DataTypes.VIRTUAL,
       passwordHash: DataTypes.STRING,
       forgetPasswordCode: DataTypes.STRING,

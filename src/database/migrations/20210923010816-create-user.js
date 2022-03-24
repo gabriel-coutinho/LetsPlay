@@ -21,6 +21,11 @@ module.exports = {
       unique: true,
       allowNull: false,
     },
+    gender: {
+      type: Sequelize.STRING,
+      unique: false,
+      allowNull: false,
+    },
     passwordHash: {
       type: Sequelize.STRING,
     },

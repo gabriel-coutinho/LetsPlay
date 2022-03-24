@@ -23,6 +23,10 @@ module.exports = {
     },
     vacancy: {
       type: Sequelize.INTEGER,
+      defaultValue: '1',
+    },
+    usersCount: {
+      type: Sequelize.INTEGER,
       defaultValue: '0',
     },
     sportId: {
