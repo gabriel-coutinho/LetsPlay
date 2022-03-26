@@ -207,8 +207,7 @@ const usersInPost = async (req, res) => {
 
 const getRequestsByPost = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.query;
+    const { id, status } = req.params;
 
     log.info(`Iniciando busca das solicitações do post. postId = ${id}`);
     log.info('Verificando se post existe');

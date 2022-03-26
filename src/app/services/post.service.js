@@ -211,20 +211,15 @@ const getByStatus = async (params) => {
   const status = params.status
     ? params.status.split(';')
     : ['OPEN', 'FULL', 'EXPIRED'];
-  const { date } = params;
   let offset = null;
   let posts = null;
 
-  const where = date
-    ? {
-      status,
-      date: {
-        [Op.lt]: now,
-      },
-    }
-    : {
-      status,
-    };
+  const where = {
+    status,
+    date: {
+      [Op.gte]: now,
+    },
+  };
 
   const include = [
     {

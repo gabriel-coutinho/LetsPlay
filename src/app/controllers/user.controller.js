@@ -355,23 +355,28 @@ const getPostsByUserId = async (req, res) => {
 
 const getRequestsByUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { query, user } = req;
 
-    log.info(`Iniciando busca das solicitações do usuário. userId = ${id}`);
     log.info('Verificando se usuário existe');
 
-    const user = await service.getOnlyUserById(id);
+    const existedUser = await service.getOnlyUserById(user.id);
 
-    if (!user) {
+    if (!existedUser) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: 'Usuário não encontrado' });
     }
 
-    log.info('Buscando solicitações do usuário.');
-    const requestByUserInfo = await service.getRequestsByUser(id);
+    log.info(
+      `Iniciando busca das solicitações do usuário. userId = ${user.id}`,
+    );
 
-    log.info(`Finalizando busca por solicitações do usuário. userId = ${id}`);
+    log.info('Buscando solicitações do usuário.');
+    const requestByUserInfo = await service.getRequestsByUser(user.id, query);
+
+    log.info(
+      `Finalizando busca por solicitações do usuário. userId = ${user.id}`,
+    );
     return res.status(StatusCodes.OK).json(requestByUserInfo);
   } catch (error) {
     const errorMsg = 'Erro ao buscar solicitações do usuário.';

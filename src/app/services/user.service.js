@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 const {
-  User, Address, Image, Request,
+  User, Address, Image, Request, Post,
 } = require('../models');
 // const log = require('../services/log.service');
 
@@ -90,19 +91,53 @@ const changePassword = (user, newPassword) => {
   return updatedUser.save();
 };
 
-const getRequestsByUser = (id, status) => {
-  let where = {
-    userId: id,
+const getRequestsByUser = async (userId, query) => {
+  const page = parseInt(query.page, 10);
+  const pageSize = parseInt(query.pageSize, 10);
+  const now = new Date();
+  const status = query.status
+    ? query.status.split(';')
+    : ['OPEN', 'ACCEPTED', 'REJECTED'];
+
+  let offset = null;
+  let requests = null;
+  const where = {
+    userId,
+    status,
+    date: {
+      [Op.gte]: now,
+    },
   };
 
-  if (status) {
-    where = {
-      ...where,
-      status,
+  const include = [
+    {
+      model: User,
+      as: 'user',
+    },
+    {
+      model: Post,
+      as: 'post',
+    },
+  ];
+
+  if (page && pageSize) offset = (page - 1) * pageSize;
+
+  if (offset !== null) {
+    const options = {
+      limit: pageSize,
+      offset,
+      distinct: true,
+      where,
+      include,
     };
+    requests = await Request.findAndCountAll(options);
+
+    requests.pages = Math.ceil(requests.count / pageSize);
+  } else {
+    requests = await Request.findAll({ where, include });
   }
 
-  return Request.findAll({ where });
+  return requests;
 };
 
 const remove = (user) => user.destroy();
