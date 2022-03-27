@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Request, User, Post } = require('../models');
 
 const create = (data) => Request.create(data);
@@ -58,6 +59,20 @@ const update = (id, data) => Request.update(data, {
   },
 });
 
+const existedOpenRequestOnPost = (userId, postId) => {
+  const status = 'OPEN';
+  const now = new Date();
+  const where = {
+    userId,
+    postId,
+    status,
+    date: {
+      [Op.gte]: now,
+    },
+  };
+  return Request.findOne({ where });
+};
+
 const remove = (request) => request.destroy();
 
 module.exports = {
@@ -65,6 +80,7 @@ module.exports = {
   getById,
   getOnlyRequestById,
   getAll,
+  existedOpenRequestOnPost,
   update,
   remove,
 };

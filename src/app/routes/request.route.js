@@ -7,6 +7,11 @@ const router = express.Router();
 router.post('/', verifyAuthorization, controller.create);
 router.get('/', verifyAuthorization, controller.getAll);
 router.get('/:id', verifyAuthorization, controller.getById);
+router.get(
+  '/me/:postId',
+  verifyAuthorization,
+  controller.existedOpenRequestOnPost,
+);
 router.put('/:id', verifyAuthorization, controller.update);
 router.delete('/:id', verifyAuthorization, controller.remove);
 

@@ -12,12 +12,7 @@ const { StatusCodes } = httpStatus;
 const create = async (req, res) => {
   try {
     const { request } = req.body;
-
-    if (!request.userId) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: 'userId é obrigatório na criação de uma solicitação' });
-    }
+    const { user } = req;
 
     if (!request.postId) {
       return res
@@ -25,12 +20,12 @@ const create = async (req, res) => {
         .json({ error: 'postId é obrigatório na criação de uma solicitação' });
     }
 
-    log.info(`Verificando existência do usuário. userId:${request.userId}.`);
-    const existedUser = await serviceUser.getOnlyUserById(request.userId);
+    log.info(`Verificando existência do usuário. userId:${user.id}.`);
+    const existedUser = await serviceUser.getOnlyUserById(user.id);
     if (!existedUser) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: `Usuário não encontrado. userId:${request.userId}` });
+        .json({ error: `Usuário não encontrado. userId:${user.id}` });
     }
 
     log.info(`Verificando existência do post. postId:${request.postId}.`);
@@ -46,6 +41,7 @@ const create = async (req, res) => {
     log.info('Criando solicitação');
     request.status = STATUS.OPEN;
     request.date = existedPost.date;
+    request.userId = user.id;
     const newRequest = await service.create(request);
 
     log.info(`Buscando request por id = ${newRequest.id}`);
@@ -102,6 +98,55 @@ const getById = async (req, res) => {
     return res.status(StatusCodes.OK).json(request);
   } catch (error) {
     const errorMsg = 'Erro ao buscar solicitação';
+
+    log.error(errorMsg, 'app/controllers/request.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
+const existedOpenRequestOnPost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { user } = req;
+
+    log.info(
+      `Iniciando existencia de solicitação aberta. userId = ${user.id}. postId = ${postId}`,
+    );
+    log.info('Verificando existência do post');
+
+    const existedPost = servicePost.getOnlyPostById(postId);
+    if (!existedPost) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Post não encontrado' });
+    }
+
+    log.info('Verificando existência do user');
+    const existedUser = serviceUser.getOnlyUserById(user.id);
+    if (!existedUser) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'User não encontrado' });
+    }
+
+    log.info('Verificando existência de request open');
+    const request = await service.existedOpenRequestOnPost(user.id, postId);
+
+    if (!request) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Solicitação não encontrada' });
+    }
+
+    log.info(
+      `Finalizando existe solicitação aberta. requestId = ${request.id}`,
+    );
+    return res.status(StatusCodes.OK).json(request);
+  } catch (error) {
+    const errorMsg = 'Erro ao verificar solicitação aberta';
 
     log.error(errorMsg, 'app/controllers/request.controller.js', error.message);
 
@@ -197,6 +242,7 @@ module.exports = {
   create,
   getAll,
   getById,
+  existedOpenRequestOnPost,
   update,
   remove,
 };
