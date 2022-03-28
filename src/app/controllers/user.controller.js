@@ -353,6 +353,43 @@ const getPostsByUserId = async (req, res) => {
   }
 };
 
+const getPostsByUserIdNoPagination = async (req, res) => {
+  try {
+    let { id } = req.params;
+    const status = 'OPEN';
+
+    if (id === 'me') {
+      id = req.user.id;
+    }
+
+    log.info(`Iniciando listagem posts do usuário, userId: ${id}`);
+    log.info('Verificando se usuário existe');
+
+    const user = await service.getOnlyUserById(id);
+
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'Usuário não encontrado' });
+    }
+
+    const posts = await postService.getPostsByUserIdNoPagination(id, status);
+
+    const postsWithReq = posts.filter((post) => post.requests.length > 0);
+
+    log.info('Busca finalizada com sucesso');
+    return res.status(StatusCodes.OK).json(postsWithReq);
+  } catch (error) {
+    const errorMsg = 'Erro ao buscar posts do usuário';
+
+    log.error(errorMsg, 'app/controllers/user.controller.js', error.message);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: `${errorMsg} ${error.message}` });
+  }
+};
+
 const getRequestsByUser = async (req, res) => {
   try {
     const { query, user } = req;
@@ -399,5 +436,6 @@ module.exports = {
   changePassword,
   addImage,
   getPostsByUserId,
+  getPostsByUserIdNoPagination,
   getRequestsByUser,
 };

@@ -182,11 +182,79 @@ const update = async (req, res) => {
               'Solicitação não pode ser aceita por usuário diferente do dono do post.',
           });
         }
-        log.info('Adicionando usuário ao post');
-        serviceUserPost.create({
-          userId: existedRequest.userId,
-          postId: existedRequest.postId,
-        });
+
+        log.info('Verificando se post está cheio');
+        if (
+          existedRequest.post.status === STATUS.FULL
+          || existedRequest.post.usersCount >= existedRequest.post.vacancy
+        ) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'Solicitação não pode ser aceita post cheio.',
+          });
+        }
+
+        const userInPost = await serviceUserPost.getByUserIdPostId(
+          existedRequest.userId,
+          existedRequest.postId,
+        );
+        if (!userInPost) {
+          log.info('Adicionando usuário ao post');
+          await serviceUserPost.create({
+            userId: existedRequest.userId,
+            postId: existedRequest.postId,
+          });
+
+          await servicePost.update(existedRequest.post.id, {
+            usersCount: existedRequest.post.usersCount + 1,
+          });
+
+          const updatedPost = await servicePost.getOnlyPostById(
+            existedRequest.post.id,
+          );
+          const now = new Date();
+          log.info('Colocando status para cheio se necessário');
+          if (
+            updatedPost.date >= now
+            && updatedPost.usersCount >= updatedPost.vacancy
+          ) {
+            await servicePost.update(updatedPost.id, { status: STATUS.FULL });
+          }
+        }
+      } else if (request.status === STATUS.REJECTED) {
+        log.info('Verificando se o usuário logado é dono do post.');
+        if (user.id !== existedRequest.post.ownerId) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            error:
+              'Solicitação não pode ser rejeitada por usuário diferente do dono do post.',
+          });
+        }
+
+        const userInPost = await serviceUserPost.getByUserIdPostId(
+          existedRequest.userId,
+          existedRequest.postId,
+        );
+        log.info(userInPost);
+        if (userInPost) {
+          log.info('Adicionando usuário ao post');
+          await serviceUserPost.remove(userInPost);
+
+          await servicePost.update(existedRequest.post.id, {
+            usersCount: existedRequest.post.usersCount - 1,
+          });
+
+          const updatedPost = await servicePost.getOnlyPostById(
+            existedRequest.post.id,
+          );
+
+          log.info('Retirando status de cheio se necessário');
+          const now = new Date();
+          if (
+            updatedPost.date >= now
+            && updatedPost.usersCount < updatedPost.vacancy
+          ) {
+            await servicePost.update(updatedPost.id, { status: STATUS.OPEN });
+          }
+        }
       }
     }
     log.info('Atualizando dados da solicitação');

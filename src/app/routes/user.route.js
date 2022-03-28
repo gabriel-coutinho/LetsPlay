@@ -16,6 +16,11 @@ router.put(
   controller.addImage,
 );
 router.get('/:id/posts', verifyAuthorization, controller.getPostsByUserId);
+router.get(
+  '/:id/postsWithReq',
+  verifyAuthorization,
+  controller.getPostsByUserIdNoPagination,
+);
 router.get('/requests', verifyAuthorization, controller.getRequestsByUser);
 router.get('/:id', verifyAuthorization, controller.getById);
 router.put('/:id', verifyAuthorization, controller.update);

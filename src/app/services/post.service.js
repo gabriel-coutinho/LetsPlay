@@ -24,6 +24,10 @@ const getById = (id) => Post.findByPk(id, {
       ],
     },
     {
+      model: User,
+      as: 'users',
+    },
+    {
       model: Address,
       as: 'address',
     },
@@ -75,6 +79,10 @@ const getAll = async (query) => {
           as: 'image',
         },
       ],
+    },
+    {
+      model: User,
+      as: 'users',
     },
     {
       model: Address,
@@ -136,10 +144,14 @@ const update = (id, data) => Post.update(data, {
 const getPostsByUserId = async (ownerId, pagination) => {
   const page = parseInt(pagination.page, 10);
   const pageSize = parseInt(pagination.pageSize, 10);
+  const status = pagination.status
+    ? pagination.status.split(';')
+    : ['OPEN', 'FULL', 'EXPIRED'];
   let offset = null;
   let posts = null;
   const where = {
     ownerId,
+    status,
   };
   const include = [
     {
@@ -151,6 +163,26 @@ const getPostsByUserId = async (ownerId, pagination) => {
           as: 'image',
         },
       ],
+    },
+    {
+      model: Request,
+      as: 'requests',
+      include: [
+        {
+          model: Post,
+          as: 'post',
+          include: [
+            {
+              model: Sport,
+              as: 'sport',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      model: User,
+      as: 'users',
     },
     {
       model: User,
@@ -204,6 +236,84 @@ const getPostsByUserId = async (ownerId, pagination) => {
   return posts;
 };
 
+const getPostsByUserIdNoPagination = async (ownerId, status) => {
+  let posts = null;
+  const where = {
+    ownerId,
+    status,
+  };
+  const include = [
+    {
+      model: Sport,
+      as: 'sport',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
+    },
+    {
+      model: Request,
+      as: 'requests',
+      include: [
+        {
+          model: Post,
+          as: 'post',
+          include: [
+            {
+              model: Sport,
+              as: 'sport',
+            },
+          ],
+        },
+        {
+          model: User,
+          as: 'user',
+        },
+      ],
+    },
+    {
+      model: User,
+      as: 'users',
+    },
+    {
+      model: User,
+      as: 'owner',
+      include: [
+        {
+          model: Image,
+          as: 'image',
+        },
+      ],
+    },
+    {
+      model: Address,
+      as: 'address',
+    },
+    {
+      model: Comment,
+      as: 'comments',
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  posts = await Post.findAll({ where, include });
+
+  return posts;
+};
+
 const getByStatus = async (params) => {
   const page = parseInt(params.page, 10);
   const pageSize = parseInt(params.pageSize, 10);
@@ -231,6 +341,10 @@ const getByStatus = async (params) => {
           as: 'image',
         },
       ],
+    },
+    {
+      model: User,
+      as: 'users',
     },
     {
       model: Address,
@@ -328,6 +442,7 @@ module.exports = {
   getAll,
   update,
   getPostsByUserId,
+  getPostsByUserIdNoPagination,
   getByStatus,
   usersInPost,
   getRequestsByPost,

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require('sequelize');
 const {
-  User, Address, Image, Request, Post,
+  User, Address, Image, Request, Post, Sport,
 } = require('../models');
 // const log = require('../services/log.service');
 
@@ -117,6 +117,12 @@ const getRequestsByUser = async (userId, query) => {
     {
       model: Post,
       as: 'post',
+      include: [
+        {
+          model: Sport,
+          as: 'sport',
+        },
+      ],
     },
   ];
 
