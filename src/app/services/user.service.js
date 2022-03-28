@@ -1,7 +1,13 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require('sequelize');
 const {
-  User, Address, Image, Request, Post, Sport,
+  User,
+  Address,
+  Image,
+  Request,
+  Post,
+  Sport,
+  Comment,
 } = require('../models');
 // const log = require('../services/log.service');
 
@@ -22,6 +28,56 @@ const getById = (id) => User.findByPk(id, {
     {
       model: Image,
       as: 'image',
+    },
+    {
+      model: Post,
+      as: 'posts',
+      include: [
+        {
+          model: Sport,
+          as: 'sport',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
+        },
+        {
+          model: User,
+          as: 'users',
+        },
+        {
+          model: Address,
+          as: 'address',
+        },
+        {
+          model: User,
+          as: 'owner',
+          include: [
+            {
+              model: Image,
+              as: 'image',
+            },
+          ],
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          include: [
+            {
+              model: User,
+              as: 'owner',
+              include: [
+                {
+                  model: Image,
+                  as: 'image',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
   ],
 });

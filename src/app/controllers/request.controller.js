@@ -235,7 +235,7 @@ const update = async (req, res) => {
         );
         log.info(userInPost);
         if (userInPost) {
-          log.info('Adicionando usuário ao post');
+          log.info('Removendo usuário do post');
           await serviceUserPost.remove(userInPost);
 
           await servicePost.update(existedRequest.post.id, {
