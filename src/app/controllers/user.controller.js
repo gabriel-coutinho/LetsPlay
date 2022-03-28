@@ -356,7 +356,7 @@ const getPostsByUserId = async (req, res) => {
 const getPostsByUserIdNoPagination = async (req, res) => {
   try {
     let { id } = req.params;
-    const status = 'OPEN';
+    const status = ['OPEN', 'FULL'];
 
     if (id === 'me') {
       id = req.user.id;

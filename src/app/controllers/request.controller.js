@@ -282,12 +282,38 @@ const remove = async (req, res) => {
 
     log.info(`Iniciando remoção da solicitação. requestId = ${id}`);
 
-    const request = await service.getOnlyRequestById(id);
+    const request = await service.getById(id);
 
     if (!request) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: 'Solicitação não encontrado' });
+    }
+
+    const userInPost = await serviceUserPost.getByUserIdPostId(
+      request.userId,
+      request.postId,
+    );
+
+    if (userInPost) {
+      log.info('Removendo usuário do post');
+      await serviceUserPost.remove(userInPost);
+
+      await servicePost.update(request.post.id, {
+        usersCount: request.post.usersCount - 1,
+      });
+
+      const updatedPost = await servicePost.getOnlyPostById(request.post.id);
+
+      log.info('Retirando status de cheio se necessário');
+      const now = new Date();
+      if (
+        updatedPost
+        && updatedPost.date >= now
+        && updatedPost.usersCount < updatedPost.vacancy
+      ) {
+        await servicePost.update(updatedPost.id, { status: STATUS.OPEN });
+      }
     }
 
     log.info(`Removendo solicitação. requestID = ${id}`);
